@@ -1,0 +1,48 @@
+# .clang-format
+
+# 设定基础样式
+BasedOnStyle: LLVM
+
+# 控制命名空间的缩进
+NamespaceIndentation: All
+
+# 控制注释格式
+CommentPragmas: '^.*$'
+
+# 控制行尾注释的对齐方式
+AlignTrailingComments: true
+
+# 控制空行的数量
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterNamespace: true
+  AfterEnum: true
+  AfterStruct: true
+  AfterClass: true
+  AfterFunction: true
+  AfterMethod: true
+  AfterUnion: true
+
+# 设置是否强制将每个条件放在独立的行上
+PenaltyBreakString: 100
+PenaltyExcessCharacter: 100
+
+# 控制缩进
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+
+# 控制数组和容器的格式化
+BreakBeforeBinaryOperators: NonAssignment
+
+# 控制函数参数的换行方式
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterFunction: true
+
+# 控制对齐方式
+AlignAfterOpenBracket: Align
+AlignOperands: Align
+
+# 控制函数的对齐方式
+ColumnLimit: 0
