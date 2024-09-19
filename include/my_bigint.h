@@ -104,7 +104,7 @@ public:
   // 比较算符
 private:
   // 比较绝对值相同,从最低位开始比较，遇到不一样的数字输出false
-  static auto cmp_abs_Equal(const BigInt &A, const BigInt &B) -> bool;
+  static auto cmp_abs_equal(const BigInt &A, const BigInt &B) -> bool;
   // 比较绝对值大小
   auto cmp_abs_less(const BigInt &N) const -> bool;
 
@@ -216,7 +216,7 @@ public:
   auto operator==(const BigInt &N) const noexcept -> bool {
     if (negative_ != N.negative_)
       return false;
-    return cmp_abs_Equal(*this, N);
+    return cmp_abs_equal(*this, N);
   }
   // 从最高位开始依次比较，输出第一个不同数字位的比较结果
   auto operator<(const BigInt &N) const -> bool {

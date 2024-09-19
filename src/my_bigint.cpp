@@ -210,7 +210,7 @@ auto BigInt::absAdd(const BigInt &N) const -> BigInt {
   return result;
 }
 auto BigInt::absSub(const BigInt &N) const -> BigInt {
-  if (cmp_abs_Equal(*this, N)) // 相等直接输出0，避免减法产生负0
+  if (cmp_abs_equal(*this, N)) // 相等直接输出0，避免减法产生负0
     // return BigInt(0, 1);//为了优化除法，改成如下形式
     return BigInt(0, size_);
   // BigInt result(0, length);//为了优化除法，改成如下形式
@@ -381,7 +381,7 @@ auto BigInt::operator/(const BigInt &N) const -> BigInt {
 auto BigInt::operator%(const BigInt &N) const -> BigInt {
   return divide(N).remainder;
 }
-auto BigInt::cmp_abs_Equal(const BigInt &A, const BigInt &B) -> bool {
+auto BigInt::cmp_abs_equal(const BigInt &A, const BigInt &B) -> bool {
   if (A.length_ != B.length_)
     return false;
   for (size_type i = 0; i < A.length_; i++)
