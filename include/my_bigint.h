@@ -55,9 +55,9 @@ public:
   // 移动构造
   BigInt(BigInt &&N) noexcept;
   // assign赋值复制运算
-  auto operator=(const BigInt &N) noexcept -> BigInt &;
+  auto operator=(const BigInt &N) & noexcept -> BigInt &;
   // 移动复制运算符
-  auto operator=(BigInt &&N) noexcept -> BigInt &;
+  auto operator=(BigInt &&N) & noexcept -> BigInt &;
   // 计算算法
 private:
   // 默认构造不初始化，内部实现其他函数的时候调用

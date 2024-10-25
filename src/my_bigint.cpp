@@ -66,7 +66,7 @@ BigInt::BigInt(std::string_view initialValue)
                  [](char x) -> value_type { return x - '0'; });
   this->getLength(length_);
 }
-auto BigInt::operator=(const BigInt &N) noexcept -> BigInt & {
+auto BigInt::operator=(const BigInt &N) & noexcept -> BigInt & {
   if (this == &N)
     return *this;
   if (size_ < N.size_)
@@ -76,7 +76,7 @@ auto BigInt::operator=(const BigInt &N) noexcept -> BigInt & {
   std::memcpy(array_, N.array_, length_ * sizeof(value_type));
   return *this;
 }
-auto BigInt::operator=(BigInt &&N) noexcept -> BigInt & {
+auto BigInt::operator=(BigInt &&N) & noexcept -> BigInt & {
   if (this == &N)
     return *this;
   length_ = N.length_;
