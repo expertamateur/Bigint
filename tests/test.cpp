@@ -3,9 +3,6 @@
 #include "my_bigint.h"
 #include <stdexcept>
 
-// #include <chrono>
-
-// static bool test = true;
 auto PI(int) -> BigInt;
 
 // 测试 BigInt 和基本整数的加减乘除法

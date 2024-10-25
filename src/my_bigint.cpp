@@ -11,7 +11,7 @@
 #include <utility>
 
 BigInt::BigInt(std::uintmax_t initialValue, const size_type _size,
-               const bool _negative)
+               const bool _negative) noexcept
     : size_{_size}, length_{1},
       array_{new value_type[std::max(size_, size_type{1})]},
       negative_{_negative} {
@@ -28,13 +28,13 @@ BigInt::BigInt(std::uintmax_t initialValue, const size_type _size,
   }
   this->getLength(i);
 }
-BigInt::BigInt(const BigInt &N)
+BigInt::BigInt(const BigInt &N) noexcept
     : size_(N.size_), length_(N.length_), array_(new value_type[N.size_]),
       negative_(N.negative_) {
   std::memcpy(array_, N.array_, length_ * sizeof(value_type));
 }
 
-BigInt::BigInt(BigInt &&N)
+BigInt::BigInt(BigInt &&N) noexcept
     : size_(N.size_), length_(N.length_),
       array_(std::exchange(N.array_, nullptr)), negative_(N.negative_) {}
 
@@ -66,7 +66,7 @@ BigInt::BigInt(std::string_view initialValue)
                  [](char x) -> value_type { return x - '0'; });
   this->getLength(length_);
 }
-auto BigInt::operator=(const BigInt &N) -> BigInt & {
+auto BigInt::operator=(const BigInt &N) noexcept -> BigInt & {
   if (this == &N)
     return *this;
   if (size_ < N.size_)
@@ -76,7 +76,7 @@ auto BigInt::operator=(const BigInt &N) -> BigInt & {
   std::memcpy(array_, N.array_, length_ * sizeof(value_type));
   return *this;
 }
-auto BigInt::operator=(BigInt &&N) -> BigInt & {
+auto BigInt::operator=(BigInt &&N) noexcept -> BigInt & {
   if (this == &N)
     return *this;
   length_ = N.length_;

@@ -9,8 +9,9 @@
 
 // 小端序，裸指针配合数组   效率高于>>智能指针和vector
 // 接受所有整数类和类string类的参数用于构造
-class BigInt {
+class BigInt final {
 private:
+  // inline static const BigInt zero{"0"};
   using value_type = std::int_fast8_t;
   using size_type = std::size_t;
   struct bigInt_division_result;
@@ -18,45 +19,45 @@ private:
   // 编译器优化前裸指针配合数组效率高于uniqe_ptr和vector，计算20000位pi时，时间差距达到20秒以上
   value_type *array_;
   bool negative_{false};
-  auto begin() -> value_type * { return array_; }
-  auto end() -> value_type * { return array_ + length_; }
+  auto begin() noexcept -> value_type * { return array_; }
+  auto end() noexcept -> value_type * { return array_ + length_; }
   // 静态根据源整数类型推断数组容量
   template <std::integral T>
-  [[nodiscard]] static constexpr size_type get_initial_size() noexcept;
-  // 编译器取得初始哈数据大小
+  [[nodiscard]] static consteval size_type get_initial_size() noexcept;
+  // 编译期取得初始哈数据大小
   template <std::integral T>
   static constexpr size_type initial_size = get_initial_size<T>();
 
   // 可以手动预分配内存,私有,人工保证_size参数合法性
   // o(n)，n：初始位数//容量至少为1,初始内容为0
   explicit BigInt(std::uintmax_t initialValue, const size_type _size,
-                  const bool _negative = false);
+                  const bool _negative = false) noexcept;
 
 public:
-  ~BigInt() { delete[] array_; }
-  BigInt() : BigInt(0, 1, false) {}
+  ~BigInt() noexcept { delete[] array_; }
+  BigInt() noexcept : BigInt(0, 1, false) {}
   // 接收不同整数，根据不同尺寸的整数初始化大小不同bigint
   template <typename T>
     requires std::integral<T> && std::is_signed_v<T>
-  explicit BigInt(T initialValue)
+  explicit BigInt(T initialValue) noexcept
       : BigInt{static_cast<std::uintmax_t>(std::abs(initialValue)),
                initial_size<T>, initialValue < T{0}} {}
   template <typename T>
     requires std::integral<T> && std::is_unsigned_v<T>
-  explicit BigInt(T initialValue)
+  explicit BigInt(T initialValue) noexcept
       : BigInt{static_cast<std::uintmax_t>(initialValue), initial_size<T>,
                false} {}
   // 从字符串初始化，没有非法符号检查
   explicit BigInt(std::string_view initialValue);
 
   // 不复制多余脏数据空间
-  BigInt(const BigInt &N);
+  BigInt(const BigInt &N) noexcept;
   // 移动构造
-  BigInt(BigInt &&N);
+  BigInt(BigInt &&N) noexcept;
   // assign赋值复制运算
-  auto operator=(const BigInt &N) -> BigInt &;
+  auto operator=(const BigInt &N) noexcept -> BigInt &;
   // 移动复制运算符
-  auto operator=(BigInt &&N) -> BigInt &;
+  auto operator=(BigInt &&N) noexcept -> BigInt &;
   // 计算算法
 private:
   // 默认构造不初始化，内部实现其他函数的时候调用
@@ -246,7 +247,7 @@ struct BigInt::bigInt_division_result {
 };
 
 template <std::integral T>
-[[nodiscard]] constexpr size_t BigInt::get_initial_size() noexcept {
+[[nodiscard]] consteval size_t BigInt::get_initial_size() noexcept {
   static_assert(sizeof(T) <= size_t{8}, "uknow int type ,add it to code");
   switch (sizeof(T)) {
   case 1:
