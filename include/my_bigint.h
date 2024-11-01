@@ -36,18 +36,19 @@ private:
 public:
   ~BigInt() noexcept { delete[] array_; }
   BigInt() noexcept : BigInt(0, 1, false) {}
-  // 接收不同整数，根据不同尺寸的整数初始化大小不同bigint
+  // 有符号整型构造
   template <typename T>
     requires std::integral<T> && std::is_signed_v<T>
   explicit BigInt(T initialValue) noexcept
       : BigInt{static_cast<std::uintmax_t>(std::abs(initialValue)),
                initial_size<T>, initialValue < T{0}} {}
+  // 无符号整型构造
   template <typename T>
     requires std::integral<T> && std::is_unsigned_v<T>
   explicit BigInt(T initialValue) noexcept
       : BigInt{static_cast<std::uintmax_t>(initialValue), initial_size<T>,
                false} {}
-  // 从字符串初始化，没有非法符号检查
+  // string_view构造
   explicit BigInt(std::string_view initialValue);
 
   // 不复制多余脏数据空间
@@ -128,12 +129,14 @@ private:
   // 用于/%重载
   auto divide(const BigInt &N) const -> bigInt_division_result;
   // 利用基本整数类加速运算
-  auto divide_integer_uint(std::uintmax_t N,
-                           bool N_is_negative) const -> bigInt_division_result;
+  auto
+  divide_integer_uint(std::uintmax_t N, bool N_is_negative,
+                      std::size_t type_size) const -> bigInt_division_result;
   // 有符号整数和无符号整数处理方式不同
   template <typename T>
     requires std::integral<T> && std::is_signed_v<T>
   auto divide_integer(T N) const -> bigInt_division_result;
+
   template <typename T>
     requires std::integral<T> && std::is_unsigned_v<T>
   auto divide_integer(T N) const -> bigInt_division_result;
@@ -274,13 +277,14 @@ template <std::integral T>
 template <typename T>
   requires std::integral<T> && std::is_unsigned_v<T>
 auto BigInt::divide_integer(T N) const -> bigInt_division_result {
-  return divide_integer_uint(static_cast<std::uintmax_t>(N), false);
+  return divide_integer_uint(static_cast<std::uintmax_t>(N), false,
+                             initial_size<T>);
 }
 template <typename T>
   requires std::integral<T> && std::is_signed_v<T>
 auto BigInt::divide_integer(T N) const -> bigInt_division_result {
-  return divide_integer_uint(static_cast<std::uintmax_t>(std::abs(N)),
-                             N < T{0});
+  return divide_integer_uint(static_cast<std::uintmax_t>(std::abs(N)), N < T{0},
+                             initial_size<T>);
 }
 
 #endif //  MY_BIGINT_H

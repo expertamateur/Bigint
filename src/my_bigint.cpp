@@ -87,7 +87,8 @@ auto BigInt::operator=(BigInt &&N) & noexcept -> BigInt & {
   array_ = std::exchange(N.array_, nullptr);
   return *this;
 }
-auto BigInt::divide_integer_uint(std::uintmax_t N, bool N_is_negative) const
+auto BigInt::divide_integer_uint(std::uintmax_t N, bool N_is_negative,
+                                 std::size_t type_size) const
     -> bigInt_division_result {
   if (Is_zero()) {
     return bigInt_division_result{};
@@ -109,9 +110,8 @@ auto BigInt::divide_integer_uint(std::uintmax_t N, bool N_is_negative) const
   quotient.negative_ = (negative_ != N_is_negative);
   quotient.getLength(quotient.size_);
 
-  return bigInt_division_result{
-      quotient,
-      BigInt{remainder, initial_size<std::uintmax_t>, this->negative_}};
+  return bigInt_division_result{quotient,
+                                BigInt{remainder, type_size, this->negative_}};
 }
 
 auto BigInt::fillZero() -> void {
