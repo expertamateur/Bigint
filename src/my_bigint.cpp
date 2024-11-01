@@ -70,7 +70,7 @@ auto BigInt::operator=(const BigInt &N) & noexcept -> BigInt & {
   if (this == &N)
     return *this;
   if (size_ < N.size_)
-    return *this = std::move(BigInt{N});
+    return *this = BigInt{N};
   negative_ = N.negative_;
   length_ = N.length_;
   std::memcpy(array_, N.array_, length_ * sizeof(value_type));
@@ -95,7 +95,7 @@ auto BigInt::divide_integer_uint(std::uintmax_t N, bool N_is_negative) const
   if (!N) {
     throw std::invalid_argument{"can't divide by zero"};
   }
-  std::intmax_t remainder{0};
+  std::uintmax_t remainder{0};
   BigInt quotient(0, this->length_);
   for (size_type i = this->length_; i-- > 0;) {
     remainder = (remainder * 10) + this->array_[i];
@@ -108,11 +108,10 @@ auto BigInt::divide_integer_uint(std::uintmax_t N, bool N_is_negative) const
   }
   quotient.negative_ = (negative_ != N_is_negative);
   quotient.getLength(quotient.size_);
-  if (this->negative_) {
-    remainder = -remainder;
-  }
-  // return result;
-  return bigInt_division_result{quotient, BigInt{remainder}};
+
+  return bigInt_division_result{
+      quotient,
+      BigInt{remainder, initial_size<std::uintmax_t>, this->negative_}};
 }
 
 auto BigInt::fillZero() -> void {
